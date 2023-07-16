@@ -7,8 +7,8 @@
     "node": ">=18.16.0"
   },
   "scripts": {
-    "start": "node .src/bin/www",
-    "devstart": "nodemon .src/bin/www",
+    "start": "node ./src/bin/www",
+    "devstart": "nodemon ./src/bin/www",
     "serverstart": "DEBUG=express-locallibrary-tutorial:* npm run devstart"
   },
   "keywords": [],
