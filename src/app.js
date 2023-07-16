@@ -4,19 +4,46 @@ const express = require("express");
 const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
+require("dotenv").config({ path: path.resolve(__dirname, "../.env") });
 
 const indexRouter = require("./routes/index");
 const usersRouter = require("./routes/users");
 const catalogRouter = require("./routes/catalog");
 
+const compression = require("compression");
+const helmet = require("helmet");
+const RateLimit = require("express-rate-limit");
+
 const app = express();
+
+app.use(compression()); // Compress all routes
+// NOTE: For a high-traffic website in production you wouldn't use this middleware.
+// Instead, you would use a reverse proxy like Nginx.
+
+// Add helmet to the middleware chain.
+// Set CSP headers to allow our Bootstrap and Jquery to be served
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      "script-src": ["'self'", "code.jquery.com", "cdn.jsdelivr.net"],
+    },
+  })
+);
+
+const limiter = RateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 60,
+});
+// Apply rate limiter to all requests
+app.use(limiter);
 
 // Set up mongoose connection
 // eslint-disable-next-line import/order
 const mongoose = require("mongoose");
 
 mongoose.set("strictQuery", false);
-const mongoDB = "mongodb+srv://virlancostinandrei:Scoalamea12@cluster0.zfe4upk.mongodb.net/local_library?retryWrites=true&w=majority";
+// Defined in .env
+const mongoDB = process.env.MONGODB_URI;
 async function main() {
   await mongoose.connect(mongoDB);
 }
