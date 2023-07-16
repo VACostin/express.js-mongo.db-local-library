@@ -17,8 +17,7 @@ const bookinstances = [];
 
 mongoose.set("strictQuery", false); // Prepare for Mongoose 7
 
-const mongoDB = "mongodb+srv://virlancostinandrei:Scoalamea12@cluster0.zfe4upk.mongodb.net/local_library?retryWrites=true&w=majority";
-
+const mongoDB = process.env.MONGODB_URI_PROD
 // We pass the index to the ...Create functions so that, for example,
 // genre[0] will always be the Fantasy genre, regardless of the order
 // in which the elements of promise.all's argument complete.
